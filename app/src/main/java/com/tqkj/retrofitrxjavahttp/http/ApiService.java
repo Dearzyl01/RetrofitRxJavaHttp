@@ -20,6 +20,15 @@ public interface ApiService {
 
 
     /**
+     * 这个网络请求大框架是retrofit+rxjava+okhttp.
+     * retrofit负责数据的准备和数据json到实体的转换，数据的保存
+     * 它调用rxjava的相关内容结合。
+     * rxjava负责的是异步化，防止数据请求正在UI现成中发生，
+     * 保证了界面顺畅。
+     * okhttp负责网络的请求
+     */
+
+    /**
      * get请求方式（这个是根请求链接）
      *
      * @Query 形成单个查询参数, 将接口url中追加类似于"page=1"的字符串,形成提交给服务器端的参数,
@@ -32,11 +41,13 @@ public interface ApiService {
 
 
     @FormUrlEncoded  //post请求必须要申明该注解
-    @POST("/musicDetails")//方法名
+    @POST("/musicDetails")
+//方法名
     Observable<BaseResponse<List<String>>> getStr(@Field("id") String id);
 
     /**
      * 获取网易新闻
+     *
      * @param page
      * @param count
      * @return
