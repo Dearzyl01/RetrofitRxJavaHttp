@@ -1,21 +1,20 @@
 package com.tqkj.retrofitrxjavahttp;
 
-import androidx.annotation.MainThread;
 import androidx.appcompat.app.AppCompatActivity;
-import rx.Scheduler;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.tqkj.retrofitrxjavahttp.bean.WangYiNews;
-import com.tqkj.retrofitrxjavahttp.bean.WangYiNewss;
+import com.tqkj.retrofitrxjavahttp.adapter.MainListAdapter;
+import com.tqkj.retrofitrxjavahttp.bean.WangYiNewsBean;
 import com.tqkj.retrofitrxjavahttp.http.BaseObserver;
 import com.tqkj.retrofitrxjavahttp.http.BaseRequest;
 import com.tqkj.retrofitrxjavahttp.http.BaseResponse;
@@ -24,17 +23,24 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tv_news;
+    private RecyclerView rcvNews;
+    private TextView tvTitle;
+    private MainListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tv_news = this.findViewById(R.id.tv_news);
+        tvTitle = this.findViewById(R.id.page_title);
+        rcvNews = this.findViewById(R.id.rclv_news_list);
+        rcvNews.setHasFixedSize(true);
+        rcvNews.setNestedScrollingEnabled(false);
+        rcvNews.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false));
         getNews();
-        tv_news.setOnClickListener(new View.OnClickListener() {
+        tvTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                adapter.clear();
                 getNews();
             }
         });
@@ -49,28 +55,33 @@ public class MainActivity extends AppCompatActivity {
 
         BaseRequest.getInstance()
                 .getApiService()
-                .getNews("1", "10")
+                .getNews("1", "50")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<WangYiNewss>>(this) {
+                .subscribe(new BaseObserver<List<WangYiNewsBean>>(this) {
                     @SuppressLint("SetTextI18n")
                     @Override
-                    public void onSuccess(BaseResponse<List<WangYiNewss>> baseResponse) {
+                    public void onSuccess(BaseResponse<List<WangYiNewsBean>> baseResponse) {
                         //成功回调方法,可以直接在此更新ui,AndroidSchedulers.mainThread()表示切换到主线程
                         if (baseResponse.isSuccess()) {
                             LogUtils.d(baseResponse.getMessage());
                             LogUtils.json(baseResponse.getResults());
-                            List<WangYiNewss> list = baseResponse.getResults();
-                            String allStr = null;
-                            for (int i = 0; i < list.size(); i++) {
-                                allStr += list.get(i).getTitle()
-                                        + "\n" + list.get(i).getPath()
-                                        + "\n" + list.get(i).getImage()
-                                        + "\n" + list.get(i).getPasstime()
-                                        + "\n" + "\n";
-                                tv_news.setText(allStr);
+                            List<WangYiNewsBean> newsList = baseResponse.getResults();
+                            if (newsList != null && !newsList.isEmpty()) {
+                                if (adapter == null) {
+                                    adapter = new MainListAdapter(newsList);
+                                    adapter.setOnItemListener(new MainListAdapter.OnItemListener() {
+                                        @Override
+                                        public void onClick(RecyclerView.ViewHolder holder, WangYiNewsBean wangYiNew) {
+                                            ToastUtils.showShort("点击了第" + holder.getAdapterPosition() + "行的" + wangYiNew.getTitle());
+                                        }
+                                    });
+                                    rcvNews.setAdapter(adapter);
+                                } else {
+                                    adapter.updateAll(newsList);
+                                }
+                                ToastUtils.showShort("已经为您推荐" + newsList.size() + "条新闻，请观赏");
                             }
-
                         } else {
                             ToastUtils.showShort("失败了");
                         }

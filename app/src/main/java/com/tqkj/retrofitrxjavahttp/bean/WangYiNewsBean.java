@@ -3,7 +3,7 @@ package com.tqkj.retrofitrxjavahttp.bean;
 import com.google.gson.annotations.SerializedName;
 
 
-public class WangYiNewss {
+public class WangYiNewsBean {
 
     /**
      * path : https://news.163.com/19/0308/05/E9NLBIT30001875O.html

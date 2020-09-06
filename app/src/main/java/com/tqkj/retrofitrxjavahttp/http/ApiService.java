@@ -1,8 +1,7 @@
 package com.tqkj.retrofitrxjavahttp.http;
 
 
-import com.tqkj.retrofitrxjavahttp.bean.WangYiNews;
-import com.tqkj.retrofitrxjavahttp.bean.WangYiNewss;
+import com.tqkj.retrofitrxjavahttp.bean.WangYiNewsBean;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public interface ApiService {
      */
     @FormUrlEncoded//post请求必须要申明该注解
     @POST("getWangYiNews")
-    Observable<BaseResponse<List<WangYiNewss>>> getNews(@Field("page") String page, @Field("count") String count);
+    Observable<BaseResponse<List<WangYiNewsBean>>> getNews(@Field("page") String page, @Field("count") String count);
 
 
 }
