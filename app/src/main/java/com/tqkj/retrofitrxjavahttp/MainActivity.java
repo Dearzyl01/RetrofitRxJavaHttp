@@ -3,6 +3,7 @@ package com.tqkj.retrofitrxjavahttp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -37,13 +38,6 @@ public class MainActivity extends AppCompatActivity {
         rcvNews.setNestedScrollingEnabled(false);
         rcvNews.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false));
         getNews();
-        tvTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                adapter.clear();
-                getNews();
-            }
-        });
 
 
     }
@@ -77,8 +71,16 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
                                     rcvNews.setAdapter(adapter);
+                                    tvTitle.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            adapter.clear();
+                                            getNews();
+                                        }
+                                    });
                                 } else {
                                     adapter.updateAll(newsList);
+                                    LogUtils.d("直接添加了");
                                 }
                                 ToastUtils.showShort("已经为您推荐" + newsList.size() + "条新闻，请观赏");
                             }
@@ -89,17 +91,16 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onCodeError(BaseResponse baseResponse) {
+                        LogUtils.d(baseResponse.getMessage());
                         //失败回调方法,可以直接在此更新ui,AndroidSchedulers.mainThread()表示切换到主线程
 
                     }
 
                     @Override
                     public void onFailure(Throwable e, boolean network) throws Exception {
-
+                        LogUtils.d(e.getMessage());
                     }
                 });
-
-
     }
 
 
