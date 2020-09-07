@@ -1,8 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        google()
-        jcenter()
+//        google()
+//        jcenter()
+
+        maven {
+            url "https://maven.aliyun.com/repository/jcenter"
+            name 'jcenter'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/google'
+            name 'Google'
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
@@ -14,8 +23,18 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
+//        google()
+//        jcenter()
+        //改用阿里云的速度快。国内的连接
+        maven {
+            url "https://maven.aliyun.com/repository/jcenter"
+            name 'jcenter'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/google'
+            name 'Google'
+        }
+
     }
 }
 
