@@ -8,12 +8,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.tqkj.retrofitrxjavahttp.activity.WebActivity;
 import com.tqkj.retrofitrxjavahttp.adapter.MainListAdapter;
 import com.tqkj.retrofitrxjavahttp.bean.WangYiNewsBean;
 import com.tqkj.retrofitrxjavahttp.http.BaseObserver;
@@ -67,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
                                     adapter.setOnItemListener(new MainListAdapter.OnItemListener() {
                                         @Override
                                         public void onClick(RecyclerView.ViewHolder holder, WangYiNewsBean wangYiNew) {
-                                            ToastUtils.showShort("点击了第" + holder.getAdapterPosition() + "行的" + wangYiNew.getTitle());
+                                            //ToastUtils.showShort("点击了第" + holder.getAdapterPosition() + "行的" + wangYiNew.getTitle());
+                                            startActivity(new Intent(MainActivity.this, WebActivity.class)
+                                                    .putExtra("webUrl", wangYiNew.getPath()));
                                         }
                                     });
                                     rcvNews.setAdapter(adapter);
